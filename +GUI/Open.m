@@ -80,8 +80,9 @@ base_cfg_checkbox    = {'Units', 'Normalized', 'BackgroundColor',figureBGcolor, 
 %% Main pannels
 % To add a new "main" panel, its here.
 
-handles.uipanel_perma_cfg = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.50 1.00 0.50], 'Title','CFG' );
-handles.uipanel_task      = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.00 1.00 0.50], 'Title','TASK');
+handles.uipanel_perma_cfg = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.50 1.00 0.50], 'Title','CFG'     );
+handles.uipanel_epiphany  = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.20 1.00 0.30], 'Title','epiphany');
+handles.uipanel_task      = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.00 1.00 0.20], 'Title','TASK'    );
 
 
 %% Panel : permanent config
@@ -170,21 +171,16 @@ handles.pushbutton_eyelink_downloadfiles = uicontrol(where, base_cfg_pushbutton{
 handles.pushbutton_eyelink_forcereset    = uicontrol(where, base_cfg_pushbutton{:}, 'Position',[0.66 0.00 0.33 0.50], 'String','ForceReset   ', 'Callback', @GUI.VIEW.pushbutton_eyelink_forcereset_Callback   );
 
 
+%% Panel : epiphany
+
+where = handles.uipanel_epiphany;
+handles.listbox_design = uicontrol(where, base_cfg_listbox {:}, 'Position',[0.05 0.05 0.30 0.80], 'String',UTILS.GET.ConfigFiles(), 'Callback',@GUI.VIEW.listbox_design_Callback);
+
+
 %% Panel : Task
 
 where = handles.uipanel_task;
-
-tasklist = UTILS.GET.TaskList();
-
-nObjPerRow = 2;
-task_dispatcher = GUI.VIEW.ObjectDispatcher(ones(size(tasklist)), nObjPerRow);
-
-for i = 1 : length(tasklist)
-    task_dispatcher.next();
-    taskname = tasklist{i};
-    uiname = sprintf('pushbutton_task_%s', taskname);
-    handles.(uiname) = uicontrol(where, base_cfg_pushbutton{:}, 'Position',task_dispatcher.pos(), 'String',taskname, 'Callback', @GUI.Workflow);
-end
+handles.pushbutton_task = uicontrol(where, base_cfg_pushbutton{:}, 'Position',[0.25 0.25 0.50 0.50], 'String','Start', 'Callback', @GUI.Workflow);
 
 
 %% End of opening
