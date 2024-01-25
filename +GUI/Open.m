@@ -80,9 +80,9 @@ base_cfg_checkbox    = {'Units', 'Normalized', 'BackgroundColor',figureBGcolor, 
 %% Main pannels
 % To add a new "main" panel, its here.
 
-handles.uipanel_perma_cfg = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.50 1.00 0.50], 'Title','CFG'     );
-handles.uipanel_epiphany  = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.20 1.00 0.30], 'Title','epiphany');
-handles.uipanel_task      = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.00 1.00 0.20], 'Title','TASK'    );
+handles.uipanel_perma_cfg = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.50 1.00 0.50], 'Title','CFG'   );
+handles.uipanel_design    = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.20 1.00 0.30], 'Title','DESIGN');
+handles.uipanel_task      = uipanel(handles.(gui_name), base_cfg_panel{:}, 'Position',[0.00 0.00 1.00 0.20], 'Title','TASK'  );
 
 
 %% Panel : permanent config
@@ -173,7 +173,7 @@ handles.pushbutton_eyelink_forcereset    = uicontrol(where, base_cfg_pushbutton{
 
 %% Panel : epiphany
 
-where = handles.uipanel_epiphany;
+where = handles.uipanel_design;
 handles.listbox_design = uicontrol(where, base_cfg_listbox {:}, 'Position',[0.05 0.05 0.30 0.80], 'String',UTILS.GET.ConfigFiles(), 'Callback',@GUI.VIEW.listbox_design_Callback);
 
 

@@ -1,4 +1,6 @@
 function listbox_design_Callback(hObject, ~)
-design = hObject.String{hObject.Value};
+all_designs = get(hObject, 'String');
+selected_value = get(hObject, 'Value');
+design = all_designs{selected_value};
 cfg = DESIGN.(design); % just run it
 end % end
