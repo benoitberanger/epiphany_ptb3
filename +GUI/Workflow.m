@@ -46,6 +46,11 @@ S.guiEyelink     = GUI.GET.Eyelink    ( handles );
 S.guiDesign      = GUI.GET.Design     ( handles );
 
 
+%% Store design
+
+S.Design = DESIGN.(S.guiDesign);
+
+
 %% Some warnings, and other stuff
 
 S.WriteFiles = strcmp(S.guiACQmode, 'Acquisition') && S.guiSave;
