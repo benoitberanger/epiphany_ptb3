@@ -71,9 +71,9 @@ S.cfgKeybinds.Start = KbName('t');
 S.cfgKeybinds.Abort = KbName('escape');
 switch S.guiKeybind
     case 'fORP (MRI)'
-        S.cfgKeybinds.Catch = KbName('b');
+        S.cfgKeybinds.Click = KbName('b');
     case 'Keyboard'
-        S.cfgKeybinds.Catch = KbName('DownArrow');
+        S.cfgKeybinds.Click = KbName('DownArrow');
     otherwise
         error('unknown S.guiKeybind : %s', S.guiKeybind)
 end
@@ -138,6 +138,9 @@ for evt = 1 : S.recPlanning.count
         next_evt_onset = S.recPlanning.data{evt+1,S.recPlanning.icol_onset};
     end
 
+    fprintf('%s : onset = %gs  duration = %gs  (remaining time = %gs) \n', ...
+        evt_name, evt_onset, evt_duration, sum(cell2mat(S.recPlanning.data(evt:end, S.recPlanning.icol_duration))) )
+
     switch evt_name
 
         case 'START'
@@ -162,7 +165,6 @@ for evt = 1 : S.recPlanning.count
             real_onset = Window.Flip(S.STARTtime + evt_onset - Window.slack);
             S.recEvent.AddStim(evt_name, real_onset-S.STARTtime, []);
 
-            fprintf('rest : %gs \n', evt_duration)
             S.Window.AddFrameToMovie(evt_duration);
 
             next_onset = S.STARTtime + next_evt_onset - Window.slack;
@@ -171,6 +173,7 @@ for evt = 1 : S.recPlanning.count
                 if keyIsDown
                     EXIT = keyCode(S.cfgKeybinds.Abort);
                     if EXIT, break, end
+                    if keyCode(S.cfgKeybinds.Click), fprintf('>>> click <<< \n'), end
                 end
             end
 
@@ -181,7 +184,6 @@ for evt = 1 : S.recPlanning.count
             real_onset = Window.Flip(S.STARTtime + evt_onset - Window.slack);
             S.recEvent.AddStim(evt_name, real_onset-S.STARTtime, []);
 
-            fprintf('stim : %gs \n', evt_duration)
             S.Window.AddFrameToMovie(evt_duration);
 
             next_onset = S.STARTtime + next_evt_onset - Window.slack - S.delta_time_flicflac*2;
@@ -190,30 +192,77 @@ for evt = 1 : S.recPlanning.count
                 real_onset = Window.Flip(real_onset + S.delta_time_flicflac);
                 Checkerboard.DrawFlic();
                 real_onset = Window.Flip(real_onset + S.delta_time_flicflac);
-                
+
                 [keyIsDown, secs, keyCode] = KbCheck();
                 if keyIsDown
                     EXIT = keyCode(S.cfgKeybinds.Abort);
                     if EXIT, break, end
+                    if keyCode(S.cfgKeybinds.Click), fprintf('>>> click <<< \n'), end
                 end
             end
 
         case 'ctrl'
 
-            % draw : TODO
-            Screen('FillRect', Window.ptr, [255 0 0 255], [0 0 100 100])
+            factor = 1.3;
+            animation_duration = evt_duration;
+
+            n_frames_ramp   = round(animation_duration / Window.ifi / 4);
+            n_frames_fattop = round(animation_duration / Window.ifi / 2);
+
+            orig_dim   = FixationCross.dim;
+            orig_color = FixationCross.color;
+
+            factor_steps = linspace(orig_dim, orig_dim*factor, n_frames_ramp);
+            color_steps  = linspace(double(orig_color(1)), 0, n_frames_ramp);
+
+            FixationCross.Draw();
             real_onset = Window.Flip(S.STARTtime + evt_onset - Window.slack);
             S.recEvent.AddStim(evt_name, real_onset-S.STARTtime, []);
 
-            fprintf('ctrl : %gs \n', evt_duration)
-            S.Window.AddFrameToMovie(evt_duration);
+            S.Window.AddFrameToMovie();
 
-            next_onset = S.STARTtime + next_evt_onset - Window.slack;
-            while secs < next_onset
+            for i = 1 : n_frames_ramp
+                FixationCross.dim = factor_steps(i);
+                FixationCross.GenerateCoords();
+                FixationCross.color(2:3) = color_steps(i);
+                FixationCross.Draw();
+                Window.Flip();
+                S.Window.AddFrameToMovie();
                 [keyIsDown, secs, keyCode] = KbCheck();
                 if keyIsDown
                     EXIT = keyCode(S.cfgKeybinds.Abort);
                     if EXIT, break, end
+                    if keyCode(S.cfgKeybinds.Click), fprintf('>>> click <<< \n'), end
+                end
+            end
+
+            for i = 1 : n_frames_fattop
+                FixationCross.Draw();
+                Window.Flip();
+                S.Window.AddFrameToMovie();
+                [keyIsDown, secs, keyCode] = KbCheck();
+                if keyIsDown
+                    EXIT = keyCode(S.cfgKeybinds.Abort);
+                    if EXIT, break, end
+                    if keyCode(S.cfgKeybinds.Click), fprintf('>>> click <<< \n'), end
+                end
+            end
+
+            color_steps  = fliplr( color_steps);
+            factor_steps = fliplr(factor_steps);
+
+            for i = 1 : n_frames_ramp
+                FixationCross.dim = factor_steps(i);
+                FixationCross.GenerateCoords();
+                FixationCross.color(2:3) = color_steps(i);
+                FixationCross.Draw();
+                Window.Flip();
+                S.Window.AddFrameToMovie();
+                [keyIsDown, secs, keyCode] = KbCheck();
+                if keyIsDown
+                    EXIT = keyCode(S.cfgKeybinds.Abort);
+                    if EXIT, break, end
+                    if keyCode(S.cfgKeybinds.Click), fprintf('>>> click <<< \n'), end
                 end
             end
 
@@ -262,8 +311,8 @@ assignin('base', 'S', S)
 switch S.guiACQmode
     case 'Acquisition'
     case {'Debug', 'FastDebug'}
-        UTILS.plotDelay(S.recPlanning, S.recEvent);
-        UTILS.plotStim(S.recPlanning, S.recEvent, S.recKeylogger);
+        % UTILS.plotDelay(S.recPlanning, S.recEvent);
+        % UTILS.plotStim(S.recPlanning, S.recEvent, S.recKeylogger);
 end
 
 
