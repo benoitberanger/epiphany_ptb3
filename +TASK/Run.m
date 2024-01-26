@@ -45,7 +45,7 @@ switch S.guiACQmode
     case 'Acquisition'
         % pass
     case {'Debug', 'FastDebug'}
-        debug_rest_duration = 2; % seconds
+        debug_rest_duration = 5*S.Design.TR; % seconds
 
         dur = cell2mat(S.recPlanning.data(:,S.recPlanning.icol_duration));
         rest_idx = strcmp(S.recPlanning.data(:,S.recPlanning.icol_name), 'rest');
@@ -119,7 +119,7 @@ Checkerboard.color_flic(1:3) = [255 255 255] *  S.Design.contrast;
 Checkerboard.color_flac(1:3) = [255 255 255] *  S.Design.contrast;
 Checkerboard.GenerateRects();
 
-delta_time_flicflac = 1 / S.Design.frequency;
+S.delta_time_flicflac = 1 / S.Design.frequency;
 
 
 %% run the events
@@ -184,18 +184,18 @@ for evt = 1 : S.recPlanning.count
             fprintf('stim : %gs \n', evt_duration)
             S.Window.AddFrameToMovie(evt_duration);
 
-            next_onset = S.STARTtime + next_evt_onset - Window.slack - delta_time_flicflac*2;
+            next_onset = S.STARTtime + next_evt_onset - Window.slack - S.delta_time_flicflac*2;
             while secs < next_onset
+                Checkerboard.DrawFlac();
+                real_onset = Window.Flip(real_onset + S.delta_time_flicflac);
+                Checkerboard.DrawFlic();
+                real_onset = Window.Flip(real_onset + S.delta_time_flicflac);
+                
                 [keyIsDown, secs, keyCode] = KbCheck();
                 if keyIsDown
                     EXIT = keyCode(S.cfgKeybinds.Abort);
                     if EXIT, break, end
                 end
-
-                Checkerboard.DrawFlac();
-                real_onset = Window.Flip(real_onset + delta_time_flicflac);
-                Checkerboard.DrawFlic();
-                real_onset = Window.Flip(real_onset + delta_time_flicflac);
             end
 
         case 'ctrl'
