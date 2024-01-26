@@ -138,7 +138,7 @@ for evt = 1 : S.recPlanning.count
         next_evt_onset = S.recPlanning.data{evt+1,S.recPlanning.icol_onset};
     end
 
-    fprintf('%s : onset = %gs  duration = %gs  (remaining time = %gs) \n', ...
+    fprintf('%s : onset = %7.3fs  duration = %7.3fs  (remaining time = %7.3fs) \n', ...
         evt_name, evt_onset, evt_duration, sum(cell2mat(S.recPlanning.data(evt:end, S.recPlanning.icol_duration))) )
 
     switch evt_name
@@ -311,8 +311,8 @@ assignin('base', 'S', S)
 switch S.guiACQmode
     case 'Acquisition'
     case {'Debug', 'FastDebug'}
-        % UTILS.plotDelay(S.recPlanning, S.recEvent);
-        % UTILS.plotStim(S.recPlanning, S.recEvent, S.recKeylogger);
+        UTILS.plotDelay(S.recPlanning, S.recEvent);
+        UTILS.plotStim(S.recPlanning, S.recEvent, S.recKeylogger);
 end
 
 
