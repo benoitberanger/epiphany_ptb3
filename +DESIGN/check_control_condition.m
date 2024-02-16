@@ -12,7 +12,7 @@ cfg.name = mfilename;
 
 %% General parameters
 
-cfg.TR           = 0.300;                                                    % millisecond
+cfg.TR           = 0.300;                                                  % second
 cfg.contrast     = 1;                                                      % ratio, from 0 to 1
 cfg.frequency    = 6;                                                      % Hz !!! must be a multiple of the framerate
 cfg.nSquareWidth = 8;                                                      % number of square in the horizontal direction

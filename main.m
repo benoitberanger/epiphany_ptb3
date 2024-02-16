@@ -25,4 +25,13 @@ GUI.Open() % the GUI is the **ONLY** interface the user will interact with
 
 % The workflow is here : GUI.Workflow()
 
+%% Notes
+
+% Modify / add designs
+% Task design is in +DESIGN directory -> when you add a .m file, close the GUI and relaunch the main()
+
+% Acquistion vs. Debug vs. FastDebug
+% Debug vs. FastDebug -> all `rest` are shorter. Check the TASK.Run().
+
+
 end % function

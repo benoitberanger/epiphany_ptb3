@@ -9,7 +9,7 @@ logger.log('Starting (or focussing) GUI...');
 
 % debug=1 closes previous figure and reopens it, and send the gui handles
 % to base workspace.
-debug = 1;
+debug = 0;
 
 gui_name = [ 'GUI_' CONFIG.ProjectName() ];
 
@@ -134,12 +134,16 @@ where = handles.uipanel_parport;
 handles.radiobutton_pp_yes = uicontrol(where, base_cfg_radiobutton{:}, 'Position',[0.05 0.50 0.90 0.50], 'String','Yes', 'Tooltip','');
 handles.radiobutton_pp_no  = uicontrol(where, base_cfg_radiobutton{:}, 'Position',[0.05 0.00 0.90 0.50], 'String','No' , 'Tooltip','');
 
-result = GUI.VIEW.IsOpenParPortPortDetected();
-if ~result
-    where.SelectedObject = handles.radiobutton_pp_no;
-    handles.radiobutton_pp_yes.Visible = 'off';
-    logger.err('Parallel port GUI option disabled')
-end
+logger.warn('Parallel port is disabled by default')
+where.SelectedObject = handles.radiobutton_pp_no;
+handles.radiobutton_pp_yes.Visible = 'off';
+
+% result = GUI.VIEW.IsOpenParPortPortDetected();
+% if ~result
+%     where.SelectedObject = handles.radiobutton_pp_no;
+%     handles.radiobutton_pp_yes.Visible = 'off';
+%     logger.err('Parallel port GUI option disabled')
+% end
 
 
 %% Panel : Screen
