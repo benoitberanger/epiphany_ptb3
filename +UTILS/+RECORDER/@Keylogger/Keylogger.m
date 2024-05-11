@@ -31,7 +31,7 @@ classdef Keylogger < UTILS.RECORDER.Stim
             self.description = class(self);
 
             self.keymap     = keymap;
-            self.kbList_num = struct2array(keymap);
+            self.kbList_num = cell2mat(struct2cell(keymap));
             self.kbList_str = KbName(self.kbList_num);
             self.kbList_lbl = fieldnames(keymap);
 
